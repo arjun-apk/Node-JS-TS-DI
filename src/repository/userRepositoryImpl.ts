@@ -1,5 +1,5 @@
-import { IUserRepository } from "../context/user/userRepository";
 import { Service } from "typedi";
+import { IUserRepository } from "../context/user/userRepository";
 
 @Service(IUserRepository.identity)
 export class UserRepositoryImpl extends IUserRepository {
