@@ -1,45 +1,65 @@
-import { Service } from "typedi";
+import Container, { Service } from "typedi";
 import { IUserRepository } from "../context/user/userRepository";
-import { User } from "../model/user";
+import { BaseUser, User } from "../model/user";
+import { IDatabaseManager } from "../context/database/databaseManager";
 
 @Service(IUserRepository.identity)
 export class UserRepositoryImpl extends IUserRepository {
   private data: User[] = [];
+  database: IDatabaseManager = Container.get(IDatabaseManager.identity);
 
-  getUsers(): User[] {
+  async getUsers(): Promise<User[]> {
     console.log("UserRepositoryImpl : getUsers");
-    return this.data;
+    const rows = await this.database.executeQuery("SELECT * FROM users");
+    const users: User[] = rows.map((row) => ({
+      userId: row.UserId,
+      name: row.Name,
+      age: row.Age,
+      dateOfBirth: row.DateOfBirth,
+    }));
+    return users;
   }
 
-  getUser(id: number): User | string {
+  async getUser(id: number): Promise<User | string> {
     console.log("UserRepositoryImpl : getUser");
-    return this.data.find((each: User) => each.id == id) || "User not found";
+    const rows = await this.database.executeQuery(
+      "SELECT * FROM users WHERE userId = ?",
+      [id]
+    );
+    const user: User = rows.map((row) => ({
+      userId: row.UserId,
+      name: row.Name,
+      age: row.Age,
+      dateOfBirth: row.DateOfBirth,
+    }))[0];
+    return user || "User not found";
   }
 
-  createUser(user: User): string {
+  async createUser(user: BaseUser): Promise<string> {
     console.log("UserRepositoryImpl : createUser");
-    this.data.push(user);
-    console.log(this.data);
+    const { name, age, dateOfBirth } = user;
+    await this.database.executeQuery(
+      "INSERT INTO users (Name, Age, DateOfBirth) VALUES (?, ?, ?)",
+      [name, age, dateOfBirth]
+    );
     return "User created successfully";
   }
 
-  updateUser(id: number, user: User): string {
+  async updateUser(id: number, user: BaseUser): Promise<string> {
     console.log("UserRepositoryImpl : updateUser");
-    const index = this.data.findIndex((each: User) => each.id == id);
-    if (index !== -1) {
-      this.data[index] = { ...this.data[index], ...user };
-      return "User updated successfully";
-    }
-    return "User not found";
+    const { name, age, dateOfBirth } = user;
+    await this.database.executeQuery(
+      "UPDATE users SET Name = ?, Age = ?, DateOfBirth = ? WHERE UserId = ?",
+      [name, age, dateOfBirth, id]
+    );
+    return "User updated successfully";
   }
 
-  deleteUser(id: number): string {
+  async deleteUser(id: number): Promise<string> {
     console.log("UserRepositoryImpl : deleteUser");
-    const index = this.data.findIndex((each: User) => each.id == id);
-    if (index !== -1) {
-      this.data = this.data.filter((each: User) => each.id !== id);
-      return "User deleted successfully";
-    }
-    return "User not found";
+    await this.database.executeQuery("DELETE FROM users WHERE UserId = ?", [
+      id,
+    ]);
+    return "User deleted successfully";
   }
 }

@@ -7,27 +7,31 @@ import { User } from "../model/user";
 export class UserServiceImpl extends IUserService {
   userRepository: IUserRepository = Container.get(IUserRepository.identity);
 
-  getUsers(): User[] {
+  async getUsers(): Promise<User[]> {
     console.log("UserServiceImpl : getUsers");
-    return this.userRepository.getUsers();
+    console.log(
+      "🚀 ~ file: userServiceImpl.ts:13 ~ UserServiceImpl ~ getUsers ~ this.userRepository.getUsers():",
+      await this.userRepository.getUsers()
+    );
+    return await this.userRepository.getUsers();
   }
 
-  getUser(id: number): User | string {
+  getUser(id: number): Promise<User | string> {
     console.log("UserServiceImpl : getUser");
     return this.userRepository.getUser(id);
   }
 
-  createUser(user: User): string {
+  createUser(user: User): Promise<string> {
     console.log("UserServiceImpl : createUser");
     return this.userRepository.createUser(user);
   }
 
-  updateUser(id: number, user: User): string {
+  updateUser(id: number, user: User): Promise<string> {
     console.log("UserServiceImpl : updateUser");
     return this.userRepository.updateUser(id, user);
   }
 
-  deleteUser(id: number): string {
+  deleteUser(id: number): Promise<string> {
     console.log("UserServiceImpl : deleteUser");
     return this.userRepository.deleteUser(id);
   }

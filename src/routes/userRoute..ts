@@ -1,19 +1,21 @@
-import express from "express";
+import express, { Router } from "express";
 import { UserController } from "../controller/userController";
 
 export class UserRoute {
-  router = express.Router();
-  userController = new UserController();
+  router: Router;
+  userController: UserController;
 
-  routes() {
+  constructor() {
+    this.router = express.Router();
+    this.userController = new UserController();
     this.router
       .route("/")
-      .get(this.userController.getUsers)
-      .post(this.userController.createUser);
+      .get((req, res) => this.userController.getUsers(req, res))
+      .post((req, res) => this.userController.createUser(req, res));
     this.router
       .route("/:id")
-      .get(this.userController.getUser)
-      .put(this.userController.updateUser)
-      .delete(this.userController.deleteUser);
+      .get((req, res) => this.userController.getUser(req, res))
+      .put((req, res) => this.userController.updateUser(req, res))
+      .delete((req, res) => this.userController.deleteUser(req, res));
   }
 }
