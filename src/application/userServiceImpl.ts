@@ -9,10 +9,6 @@ export class UserServiceImpl extends IUserService {
 
   async getUsers(): Promise<User[]> {
     console.log("UserServiceImpl : getUsers");
-    console.log(
-      "🚀 ~ file: userServiceImpl.ts:13 ~ UserServiceImpl ~ getUsers ~ this.userRepository.getUsers():",
-      await this.userRepository.getUsers()
-    );
     return await this.userRepository.getUsers();
   }
 
