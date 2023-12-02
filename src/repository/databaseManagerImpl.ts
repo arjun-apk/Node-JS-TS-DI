@@ -1,6 +1,6 @@
 import { Service } from "typedi";
 import dotenv from "dotenv";
-import mysql, { QueryError, RowDataPacket } from "mysql2";
+import mysql, { OkPacket, QueryError, RowDataPacket } from "mysql2";
 import { IDatabaseManager } from "../context/database/databaseManager";
 
 dotenv.config();
@@ -25,12 +25,27 @@ export class DatabaseManagerImpl extends IDatabaseManager {
     });
   }
 
-  executeQuery(query: string, values?: string[]): Promise<RowDataPacket[]> {
+  executeGetQuery(query: string, values?: string[]): Promise<RowDataPacket[]> {
     return new Promise<RowDataPacket[]>((resolve, reject) => {
       this.connection.query(
         query,
         values,
         (error: QueryError | null, results: RowDataPacket[]) => {
+          if (error) {
+            return reject(`DB ${error}`);
+          }
+          resolve(results);
+        }
+      );
+    });
+  }
+
+  executeRunQuery(query: string, values?: string[]): Promise<OkPacket> {
+    return new Promise<OkPacket>((resolve, reject) => {
+      this.connection.query(
+        query,
+        values,
+        (error: QueryError | null, results: OkPacket) => {
           if (error) {
             return reject(`DB ${error}`);
           }

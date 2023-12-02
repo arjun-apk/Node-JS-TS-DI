@@ -37,7 +37,7 @@ export class UserRepositoryImpl extends IUserRepository {
 
   async getUsers(): Promise<User[]> {
     console.log("UserRepositoryImpl : getUsers");
-    const rows = await this.database.executeQuery(this.userQuery.findAll());
+    const rows = await this.database.executeGetQuery(this.userQuery.findAll());
     const users: User[] = rows.map((row) => ({
       userId: row.UserId,
       name: row.Name,
@@ -47,39 +47,64 @@ export class UserRepositoryImpl extends IUserRepository {
     return users;
   }
 
-  async getUser(id: number): Promise<User | string> {
+  async getUser(id: number): Promise<User | undefined> {
     console.log("UserRepositoryImpl : getUser");
-    const rows = await this.database.executeQuery(this.userQuery.findById(id));
+    const rows = await this.database.executeGetQuery(
+      this.userQuery.findById(id)
+    );
     const user: User = rows.map((row) => ({
       userId: row.UserId,
       name: row.Name,
       age: row.Age,
       dateOfBirth: row.DateOfBirth,
     }))[0];
-    return user || "User not found";
+    return user;
   }
 
-  async createUser(user: BaseUser): Promise<string> {
+  async createUser(user: BaseUser): Promise<User | undefined> {
     console.log("UserRepositoryImpl : createUser");
     const { name, age, dateOfBirth } = user;
-    await this.database.executeQuery(
+    const result = await this.database.executeRunQuery(
       this.userQuery.create(name, age, dateOfBirth)
     );
-    return "User created successfully";
+    if (result.insertId > 0) {
+      const newUser = await this.getUser(result.insertId);
+      if (newUser) {
+        return newUser;
+      }
+    }
   }
 
-  async updateUser(id: number, user: BaseUser): Promise<string> {
+  async updateUser(id: number, user: BaseUser): Promise<User | undefined> {
     console.log("UserRepositoryImpl : updateUser");
     const { name, age, dateOfBirth } = user;
-    await this.database.executeQuery(
-      this.userQuery.update(name, age, dateOfBirth, id)
+    const userDetails = await this.getUser(id);
+    if (!userDetails) {
+      return userDetails;
+    }
+    const result = await this.database.executeRunQuery(
+      this.userQuery.update(
+        name || userDetails.name,
+        age || userDetails.age,
+        dateOfBirth || userDetails.dateOfBirth,
+        id
+      )
     );
-    return "User updated successfully";
+    if (result.affectedRows > 0) {
+      const updatedUser = await this.getUser(id);
+      if (updatedUser) {
+        return updatedUser;
+      }
+    }
   }
 
-  async deleteUser(id: number): Promise<string> {
+  async deleteUser(id: number): Promise<string | undefined> {
     console.log("UserRepositoryImpl : deleteUser");
-    await this.database.executeQuery(this.userQuery.delete(id));
-    return "User deleted successfully";
+    const result = await this.database.executeRunQuery(
+      this.userQuery.delete(id)
+    );
+    if (result.affectedRows > 0) {
+      return "User deleted successfully";
+    }
   }
 }

@@ -1,11 +1,12 @@
 import { User } from "../../model/user";
+import ApiResponse from "../../utilities/apiResponse";
 
 export abstract class IUserService {
   static identity: string = "IUserService";
 
-  abstract getUsers(): Promise<User[]>;
-  abstract getUser(id: number): Promise<User | string>;
-  abstract createUser(user: User): Promise<string>;
-  abstract updateUser(id: number, user: User): Promise<string>;
-  abstract deleteUser(id: number): Promise<string>;
+  abstract getUsers(): Promise<ApiResponse>;
+  abstract getUser(id: number): Promise<ApiResponse>;
+  abstract createUser(user: User): Promise<ApiResponse>;
+  abstract updateUser(id: number, user: User): Promise<ApiResponse>;
+  abstract deleteUser(id: number): Promise<ApiResponse>;
 }
