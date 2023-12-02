@@ -2,6 +2,7 @@ import Container, { Service } from "typedi";
 import { IUserRepository } from "../context/user/userRepository";
 import { BaseUser, User } from "../model/user";
 import { IDatabaseManager } from "../context/database/databaseManager";
+import { RowDataPacket } from "mysql2";
 
 class UserQuery {
   tableName = "users";
@@ -35,15 +36,19 @@ export class UserRepositoryImpl extends IUserRepository {
   database: IDatabaseManager = Container.get(IDatabaseManager.identity);
   userQuery = new UserQuery();
 
-  async getUsers(): Promise<User[]> {
-    console.log("UserRepositoryImpl : getUsers");
-    const rows = await this.database.executeGetQuery(this.userQuery.findAll());
-    const users: User[] = rows.map((row) => ({
+  convertPascalToCamelCase(rows: RowDataPacket[]): User[] {
+    return rows.map((row) => ({
       userId: row.UserId,
       name: row.Name,
       age: row.Age,
       dateOfBirth: row.DateOfBirth,
     }));
+  }
+
+  async getUsers(): Promise<User[]> {
+    console.log("UserRepositoryImpl : getUsers");
+    const rows = await this.database.executeGetQuery(this.userQuery.findAll());
+    const users: User[] = this.convertPascalToCamelCase(rows);
     return users;
   }
 
@@ -52,12 +57,7 @@ export class UserRepositoryImpl extends IUserRepository {
     const rows = await this.database.executeGetQuery(
       this.userQuery.findById(id)
     );
-    const user: User = rows.map((row) => ({
-      userId: row.UserId,
-      name: row.Name,
-      age: row.Age,
-      dateOfBirth: row.DateOfBirth,
-    }))[0];
+    const user: User = this.convertPascalToCamelCase(rows)[0];
     return user;
   }
 

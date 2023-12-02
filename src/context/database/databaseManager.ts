@@ -1,4 +1,4 @@
-import { OkPacket, RowDataPacket } from "mysql2";
+import { ResultSetHeader, RowDataPacket } from "mysql2";
 
 export abstract class IDatabaseManager {
   static identity: string = "IDatabaseManager";
@@ -11,5 +11,5 @@ export abstract class IDatabaseManager {
   abstract executeRunQuery(
     query: string,
     values?: (string | number)[]
-  ): Promise<OkPacket>;
+  ): Promise<ResultSetHeader>;
 }
