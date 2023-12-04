@@ -1,3 +1,4 @@
+import "source-map-support/register";
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
@@ -5,6 +6,7 @@ import { DependencyInjector } from "./domain/dependencyInjector";
 import { UserRoute } from "./routes/userRoute.";
 import { IDatabaseManager } from "./context/database/databaseManager";
 import Container from "typedi";
+import logger from "./utilities/logger";
 
 dotenv.config();
 
@@ -26,5 +28,5 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/users", new UserRoute().router);
 
 app.listen(port, hostName, () => {
-  console.log(`⚡️[server]: Server is running at http://${hostName}:${port}`);
+  logger.info(`⚡️[server]: Server is running at http://${hostName}:${port}`);
 });

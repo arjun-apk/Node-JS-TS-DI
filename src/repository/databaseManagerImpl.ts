@@ -2,6 +2,8 @@ import { Service } from "typedi";
 import dotenv from "dotenv";
 import mysql, { QueryError, ResultSetHeader, RowDataPacket } from "mysql2";
 import { IDatabaseManager } from "../context/database/databaseManager";
+import logger from "../utilities/logger";
+import getCurrentFileInfo from "../utilities/getFileInfo";
 
 dotenv.config();
 
@@ -18,10 +20,10 @@ export class DatabaseManagerImpl extends IDatabaseManager {
   getConnection(): void {
     this.connection.connect((err) => {
       if (err) {
-        console.info(`Database Connection ${err}`);
+        logger.info(`Database Connection ${err}`);
         return;
       }
-      console.info("Connected to MySQL Database");
+      logger.info("Connected to MySQL Database");
     });
   }
 
@@ -32,6 +34,7 @@ export class DatabaseManagerImpl extends IDatabaseManager {
         values,
         (error: QueryError | null, results: RowDataPacket[]) => {
           if (error) {
+            logger.error(`DB ${error}`, { file: getCurrentFileInfo() });
             return reject(`DB ${error}`);
           }
           resolve(results);
@@ -47,6 +50,7 @@ export class DatabaseManagerImpl extends IDatabaseManager {
         values,
         (error: QueryError | null, results: ResultSetHeader) => {
           if (error) {
+            logger.error(`DB ${error}`, { file: getCurrentFileInfo() });
             return reject(`DB ${error}`);
           }
           resolve(results);

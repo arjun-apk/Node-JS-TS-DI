@@ -3,24 +3,26 @@ import { IUserService } from "../context/user/userService";
 import { IUserRepository } from "../context/user/userRepository";
 import { User } from "../model/user";
 import ApiResponse from "../utilities/apiResponse";
+import logger from "../utilities/logger";
+import getCurrentFileInfo from "../utilities/getFileInfo";
 
 @Service(IUserService.identity)
 export class UserServiceImpl extends IUserService {
   userRepository: IUserRepository = Container.get(IUserRepository.identity);
 
   async getUsers(): Promise<ApiResponse> {
-    console.log("UserServiceImpl : getUsers");
+    logger.info("UserServiceImpl : getUsers");
     try {
       const users = await this.userRepository.getUsers();
       return ApiResponse.read(users);
     } catch (error) {
-      console.log(error);
+      logger.error(`${error}`, { file: getCurrentFileInfo() });
       return ApiResponse.internalServerError();
     }
   }
 
   async getUser(id: number): Promise<ApiResponse> {
-    console.log("UserServiceImpl : getUser");
+    logger.info("UserServiceImpl : getUser");
     try {
       const user = await this.userRepository.getUser(id);
       if (!user) {
@@ -28,13 +30,13 @@ export class UserServiceImpl extends IUserService {
       }
       return ApiResponse.read(user);
     } catch (error) {
-      console.log(error);
+      logger.error(`${error}`, { file: getCurrentFileInfo() });
       return ApiResponse.internalServerError();
     }
   }
 
   async createUser(user: User): Promise<ApiResponse> {
-    console.log("UserServiceImpl : createUser");
+    logger.info("UserServiceImpl : createUser");
     try {
       const newUser = await this.userRepository.createUser(user);
       if (!newUser) {
@@ -42,13 +44,13 @@ export class UserServiceImpl extends IUserService {
       }
       return ApiResponse.created(newUser);
     } catch (error) {
-      console.log(error);
+      logger.error(`${error}`, { file: getCurrentFileInfo() });
       return ApiResponse.internalServerError();
     }
   }
 
   async updateUser(id: number, user: User): Promise<ApiResponse> {
-    console.log("UserServiceImpl : updateUser");
+    logger.info("UserServiceImpl : updateUser");
     try {
       const updatedUser = await this.userRepository.updateUser(id, user);
       if (!updatedUser) {
@@ -56,13 +58,13 @@ export class UserServiceImpl extends IUserService {
       }
       return ApiResponse.updated(updatedUser);
     } catch (error) {
-      console.log(error);
+      logger.error(`${error}`, { file: getCurrentFileInfo() });
       return ApiResponse.internalServerError();
     }
   }
 
   async deleteUser(id: number): Promise<ApiResponse> {
-    console.log("UserServiceImpl : deleteUser");
+    logger.info("UserServiceImpl : deleteUser");
     try {
       const user = await this.userRepository.deleteUser(id);
       if (!user) {
@@ -70,7 +72,7 @@ export class UserServiceImpl extends IUserService {
       }
       return ApiResponse.deleted(user);
     } catch (error) {
-      console.log(error);
+      logger.error(`${error}`, { file: getCurrentFileInfo() });
       return ApiResponse.internalServerError();
     }
   }
