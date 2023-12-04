@@ -3,26 +3,27 @@ import { IUserService } from "../context/user/userService";
 import { IUserRepository } from "../context/user/userRepository";
 import { User } from "../model/user";
 import ApiResponse from "../utilities/apiResponse";
-import logger from "../utilities/logger";
-import getCurrentFileInfo from "../utilities/getFileInfo";
+import { AppLogger } from "../utilities/logger";
+import { Logger } from "winston";
 
 @Service(IUserService.identity)
 export class UserServiceImpl extends IUserService {
   userRepository: IUserRepository = Container.get(IUserRepository.identity);
+  logger: Logger = AppLogger.getInstance().getLogger(__filename);
 
   async getUsers(): Promise<ApiResponse> {
-    logger.info("UserServiceImpl : getUsers");
+    this.logger.info("UserServiceImpl : getUsers");
     try {
       const users = await this.userRepository.getUsers();
       return ApiResponse.read(users);
     } catch (error) {
-      logger.error(`${error}`, { file: getCurrentFileInfo() });
+      this.logger.error(`${error}`);
       return ApiResponse.internalServerError();
     }
   }
 
   async getUser(id: number): Promise<ApiResponse> {
-    logger.info("UserServiceImpl : getUser");
+    this.logger.info("UserServiceImpl : getUser");
     try {
       const user = await this.userRepository.getUser(id);
       if (!user) {
@@ -30,13 +31,13 @@ export class UserServiceImpl extends IUserService {
       }
       return ApiResponse.read(user);
     } catch (error) {
-      logger.error(`${error}`, { file: getCurrentFileInfo() });
+      this.logger.error(`${error}`);
       return ApiResponse.internalServerError();
     }
   }
 
   async createUser(user: User): Promise<ApiResponse> {
-    logger.info("UserServiceImpl : createUser");
+    this.logger.info("UserServiceImpl : createUser");
     try {
       const newUser = await this.userRepository.createUser(user);
       if (!newUser) {
@@ -44,13 +45,13 @@ export class UserServiceImpl extends IUserService {
       }
       return ApiResponse.created(newUser);
     } catch (error) {
-      logger.error(`${error}`, { file: getCurrentFileInfo() });
+      this.logger.error(`${error}`);
       return ApiResponse.internalServerError();
     }
   }
 
   async updateUser(id: number, user: User): Promise<ApiResponse> {
-    logger.info("UserServiceImpl : updateUser");
+    this.logger.info("UserServiceImpl : updateUser");
     try {
       const updatedUser = await this.userRepository.updateUser(id, user);
       if (!updatedUser) {
@@ -58,13 +59,13 @@ export class UserServiceImpl extends IUserService {
       }
       return ApiResponse.updated(updatedUser);
     } catch (error) {
-      logger.error(`${error}`, { file: getCurrentFileInfo() });
+      this.logger.error(`${error}`);
       return ApiResponse.internalServerError();
     }
   }
 
   async deleteUser(id: number): Promise<ApiResponse> {
-    logger.info("UserServiceImpl : deleteUser");
+    this.logger.info("UserServiceImpl : deleteUser");
     try {
       const user = await this.userRepository.deleteUser(id);
       if (!user) {
@@ -72,7 +73,7 @@ export class UserServiceImpl extends IUserService {
       }
       return ApiResponse.deleted(user);
     } catch (error) {
-      logger.error(`${error}`, { file: getCurrentFileInfo() });
+      this.logger.error(`${error}`);
       return ApiResponse.internalServerError();
     }
   }

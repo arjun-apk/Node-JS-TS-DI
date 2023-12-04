@@ -3,6 +3,8 @@ import { IUserRepository } from "../context/user/userRepository";
 import { BaseUser, User } from "../model/user";
 import { IDatabaseManager } from "../context/database/databaseManager";
 import { RowDataPacket } from "mysql2";
+import { Logger } from "winston";
+import { AppLogger } from "../utilities/logger";
 
 class UserQuery {
   tableName = "users";
@@ -34,6 +36,7 @@ class UserQuery {
 @Service(IUserRepository.identity)
 export class UserRepositoryImpl extends IUserRepository {
   database: IDatabaseManager = Container.get(IDatabaseManager.identity);
+  logger: Logger = AppLogger.getInstance().getLogger(__filename);
   userQuery = new UserQuery();
 
   convertPascalToCamelCase(rows: RowDataPacket[]): User[] {
@@ -46,14 +49,14 @@ export class UserRepositoryImpl extends IUserRepository {
   }
 
   async getUsers(): Promise<User[]> {
-    console.log("UserRepositoryImpl : getUsers");
+    this.logger.info("UserRepositoryImpl : getUsers");
     const rows = await this.database.executeGetQuery(this.userQuery.findAll());
     const users: User[] = this.convertPascalToCamelCase(rows);
     return users;
   }
 
   async getUser(id: number): Promise<User | undefined> {
-    console.log("UserRepositoryImpl : getUser");
+    this.logger.info("UserRepositoryImpl : getUser");
     const rows = await this.database.executeGetQuery(
       this.userQuery.findById(id)
     );
@@ -62,7 +65,7 @@ export class UserRepositoryImpl extends IUserRepository {
   }
 
   async createUser(user: BaseUser): Promise<User | undefined> {
-    console.log("UserRepositoryImpl : createUser");
+    this.logger.info("UserRepositoryImpl : createUser");
     const { name, age, dateOfBirth } = user;
     const result = await this.database.executeRunQuery(
       this.userQuery.create(name, age, dateOfBirth)
@@ -76,7 +79,7 @@ export class UserRepositoryImpl extends IUserRepository {
   }
 
   async updateUser(id: number, user: BaseUser): Promise<User | undefined> {
-    console.log("UserRepositoryImpl : updateUser");
+    this.logger.info("UserRepositoryImpl : updateUser");
     const { name, age, dateOfBirth } = user;
     const userDetails = await this.getUser(id);
     if (!userDetails) {
@@ -99,7 +102,7 @@ export class UserRepositoryImpl extends IUserRepository {
   }
 
   async deleteUser(id: number): Promise<string | undefined> {
-    console.log("UserRepositoryImpl : deleteUser");
+    this.logger.info("UserRepositoryImpl : deleteUser");
     const result = await this.database.executeRunQuery(
       this.userQuery.delete(id)
     );

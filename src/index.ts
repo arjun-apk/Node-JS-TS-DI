@@ -6,9 +6,12 @@ import { DependencyInjector } from "./domain/dependencyInjector";
 import { UserRoute } from "./routes/userRoute.";
 import { IDatabaseManager } from "./context/database/databaseManager";
 import Container from "typedi";
-import logger from "./utilities/logger";
+import { AppLogger } from "./utilities/logger";
+import { Logger } from "winston";
 
 dotenv.config();
+
+const logger: Logger = AppLogger.getInstance().getLogger(__filename);
 
 const app: Express = express();
 app.use(bodyParser.json());

@@ -1,34 +1,43 @@
-import winston, { Logger, format, transports } from "winston";
-import dotenv from "dotenv";
-import { TransformableInfo } from "logform";
+import winston from "winston";
 
-dotenv.config();
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+export class AppLogger {
+  private static instance: AppLogger;
+  private logger: winston.Logger;
 
-const { timestamp, combine, printf } = format;
+  private constructor() {
+    let loggerFormat = winston.format.printf(
+      ({ level, message, timestamp, filename }) => {
+        return `\n[${level.toUpperCase()}] ${timestamp} ${filename}\n${message}`;
+      }
+    );
 
-interface LogInfo extends TransformableInfo {
-  file?: string;
-}
-
-const logFormat = printf(({ timestamp, level, message, file }: LogInfo) => {
-  if (file === undefined) {
-    return `\n[${level.toUpperCase()}] ${timestamp}\n${message}`;
+    this.logger = winston.createLogger({
+      level: "debug",
+      format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.json(),
+        loggerFormat
+      ),
+      transports: [
+        new winston.transports.Console(),
+        new winston.transports.File({
+          filename: `${process.env.LOG_PATH}\\${process.env.LOG_FILE_NAME}`,
+          maxsize: parseInt(process.env.LOG_MAX_FILE_SIZE as string),
+          maxFiles: parseInt(process.env.LOG_MAX_FILE_COUNT as string),
+        }),
+      ],
+    });
   }
-  return `\n${file}\n[${level.toUpperCase()}] ${timestamp}\n${message}`;
-});
 
-const logger: Logger = winston.createLogger({
-  level: process.env.LOG_LEVEL,
-  format: combine(timestamp(), logFormat),
-  transports: [
-    new transports.Console(),
-    new transports.File({
-      filename: `${process.env.LOG_PATH}\\${process.env.LOG_FILE_NAME}`,
-      maxsize: parseInt(process.env.LOG_MAX_FILE_SIZE as string, 10),
-      maxFiles: parseInt(process.env.LOG_MAX_FILE_COUNT as string, 10),
-    }),
-  ],
-});
+  public static getInstance(): AppLogger {
+    if (!AppLogger.instance) {
+      AppLogger.instance = new AppLogger();
+    }
 
-export default logger;
+    return AppLogger.instance;
+  }
+
+  public getLogger(fileName: string): winston.Logger {
+    return this.logger.child({ filename: fileName });
+  }
+}

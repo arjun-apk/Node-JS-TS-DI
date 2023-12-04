@@ -1,0 +1,60 @@
+
+[INFO] 2023-12-04T12:24:29.280Z D:\PMSquareRepository\Node JS TS DI\src\index.ts
+⚡️[server]: Server is running at http://127.0.0.1:4040
+
+[INFO] 2023-12-04T12:24:29.327Z D:\PMSquareRepository\Node JS TS DI\src\repository\databaseManagerImpl.ts
+Connected to MySQL Database
+
+[INFO] 2023-12-04T12:34:18.647Z D:\PMSquareRepository\Node JS TS DI\src\index.ts
+⚡️[server]: Server is running at http://127.0.0.1:4040
+
+[INFO] 2023-12-04T12:34:18.725Z D:\PMSquareRepository\Node JS TS DI\src\repository\databaseManagerImpl.ts
+Connected to MySQL Database
+
+[32m[INFO][32m 2023-12-04T12:36:33.982Z D:\PMSquareRepository\Node JS TS DI\src\index.ts
+⚡️[server]: Server is running at http://127.0.0.1:4040
+
+[32m[INFO][32m 2023-12-04T12:36:34.061Z D:\PMSquareRepository\Node JS TS DI\src\repository\databaseManagerImpl.ts
+Connected to MySQL Database
+
+[34m[DEBUG][34m 2023-12-04T12:36:57.983Z D:\PMSquareRepository\Node JS TS DI\src\index.ts
+⚡️[server]: Server is running at http://127.0.0.1:4040
+
+[32m[INFO][32m 2023-12-04T12:36:58.046Z D:\PMSquareRepository\Node JS TS DI\src\repository\databaseManagerImpl.ts
+Connected to MySQL Database
+
+[34m[DEBUG]undefined 2023-12-04T12:37:30.731Z D:\PMSquareRepository\Node JS TS DI\src\index.ts
+⚡️[server]: Server is running at http://127.0.0.1:4040
+
+[32m[INFO]undefined 2023-12-04T12:37:30.783Z D:\PMSquareRepository\Node JS TS DI\src\repository\databaseManagerImpl.ts
+Connected to MySQL Database
+
+[34m[DEBUG][0m 2023-12-04T12:38:20.040Z D:\PMSquareRepository\Node JS TS DI\src\index.ts
+⚡️[server]: Server is running at http://127.0.0.1:4040
+
+[32m[INFO][0m 2023-12-04T12:38:20.083Z D:\PMSquareRepository\Node JS TS DI\src\repository\databaseManagerImpl.ts
+Connected to MySQL Database
+
+[34m[DEBUG][0m 2023-12-04T12:39:57.405Z D:\PMSquareRepository\Node JS TS DI\src\index.ts
+⚡️[server]: Server is running at http://127.0.0.1:4040
+
+[32m[INFO][0m 2023-12-04T12:39:57.455Z D:\PMSquareRepository\Node JS TS DI\src\repository\databaseManagerImpl.ts
+Connected to MySQL Database
+
+[DEBUG] 2023-12-04T12:40:47.647Z D:\PMSquareRepository\Node JS TS DI\src\index.ts
+⚡️[server]: Server is running at http://127.0.0.1:4040
+
+[INFO] 2023-12-04T12:40:47.686Z D:\PMSquareRepository\Node JS TS DI\src\repository\databaseManagerImpl.ts
+Connected to MySQL Database
+
+[34m[DEBUG][0m 2023-12-04T12:41:22.521Z D:\PMSquareRepository\Node JS TS DI\src\index.ts
+⚡️[server]: Server is running at http://127.0.0.1:4040
+
+[32m[INFO][0m 2023-12-04T12:41:22.559Z D:\PMSquareRepository\Node JS TS DI\src\repository\databaseManagerImpl.ts
+Connected to MySQL Database
+
+[DEBUG] 2023-12-04T12:42:01.872Z D:\PMSquareRepository\Node JS TS DI\src\index.ts
+⚡️[server]: Server is running at http://127.0.0.1:4040
+
+[INFO] 2023-12-04T12:42:01.985Z D:\PMSquareRepository\Node JS TS DI\src\repository\databaseManagerImpl.ts
+Connected to MySQL Database
