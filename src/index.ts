@@ -13,7 +13,7 @@ dotenv.config();
 
 const logger: Logger = AppLogger.getInstance().getLogger(__filename);
 
-const app: Express = express();
+export const app: Express = express();
 app.use(bodyParser.json());
 
 const port: number = parseInt(process.env.EXPOSE_PORT as string, 10);
