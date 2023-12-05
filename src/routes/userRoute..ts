@@ -8,10 +8,12 @@ export class UserRoute {
   constructor() {
     this.router = express.Router();
     this.userController = new UserController();
+
     this.router
       .route("/")
       .get((req, res) => this.userController.getUsers(req, res))
       .post((req, res) => this.userController.createUser(req, res));
+
     this.router
       .route("/:id")
       .get((req, res) => this.userController.getUser(req, res))
