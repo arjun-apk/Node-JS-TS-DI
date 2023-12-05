@@ -1,13 +1,13 @@
 import "source-map-support/register";
 import express, { Express, Request, Response } from "express";
+import Container from "typedi";
+import { Logger } from "winston";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import { DependencyInjector } from "./domain/dependencyInjector";
-import { UserRoute } from "./routes/userRoute.";
 import { IDatabaseManager } from "./context/database/databaseManager";
-import Container from "typedi";
 import { AppLogger } from "./utilities/logger";
-import { Logger } from "winston";
+import { Routes } from "./routes";
 
 dotenv.config();
 
@@ -28,7 +28,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
 });
 
-app.use("/users", new UserRoute().router);
+new Routes(app).route();
 
 app.listen(port, hostName, () => {
   logger.info(`⚡️[server]: Server is running at http://${hostName}:${port}`);

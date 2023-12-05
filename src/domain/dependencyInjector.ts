@@ -5,6 +5,7 @@ import { IUserRepository } from "../context/user/userRepository";
 import { UserRepositoryImpl } from "../repository/userRepositoryImpl";
 import { IUserService } from "../context/user/userService";
 import { UserServiceImpl } from "../application/userServiceImpl";
+import { TestUserRepositoryImpl } from "../repository/testUserRepositoryImpl";
 
 /**
  * Dependency Injector
@@ -21,7 +22,17 @@ export class DependencyInjector {
     //#end region
 
     //#region Repository registration.
-    Container.set(IUserRepository.identity, new UserRepositoryImpl());
+    switch (mode) {
+      case "mysql":
+        Container.set(IUserRepository.identity, new UserRepositoryImpl());
+        break;
+      case "test":
+        Container.set(IUserRepository.identity, new TestUserRepositoryImpl());
+        break;
+
+      default:
+        break;
+    }
     //#end region
 
     //#region Service registration.
