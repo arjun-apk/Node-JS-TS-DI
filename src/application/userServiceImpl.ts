@@ -1,7 +1,7 @@
 import { Container, Service } from "typedi";
 import { IUserService } from "../context/user/userService";
 import { IUserRepository } from "../context/user/userRepository";
-import { User } from "../model/user";
+import { BaseUser, BaseUserOptional } from "../model/user";
 import ApiResponse from "../utilities/apiResponse";
 import { AppLogger } from "../utilities/logger";
 import { Logger } from "winston";
@@ -27,7 +27,7 @@ export class UserServiceImpl extends IUserService {
     try {
       const user = await this.userRepository.getUser(id);
       if (!user) {
-        return ApiResponse.badRequest("User not found");
+        return ApiResponse.badRequest("Invalid id");
       }
       return ApiResponse.read(user);
     } catch (error) {
@@ -36,9 +36,16 @@ export class UserServiceImpl extends IUserService {
     }
   }
 
-  async createUser(user: User): Promise<ApiResponse> {
+  async createUser(user: BaseUser): Promise<ApiResponse> {
     this.logger.info("UserServiceImpl : createUser");
     try {
+      const { name, age, dateOfBirth } = user;
+      const isValidDetails = [name, age, dateOfBirth].every(
+        (each: string | number) => each !== undefined
+      );
+      if (!isValidDetails) {
+        return ApiResponse.badRequest("Invalid details");
+      }
       const newUser = await this.userRepository.createUser(user);
       if (!newUser) {
         return ApiResponse.badRequest();
@@ -50,12 +57,19 @@ export class UserServiceImpl extends IUserService {
     }
   }
 
-  async updateUser(id: number, user: User): Promise<ApiResponse> {
+  async updateUser(id: number, user: BaseUserOptional): Promise<ApiResponse> {
     this.logger.info("UserServiceImpl : updateUser");
     try {
+      const { name, age, dateOfBirth } = user;
+      const isValidDetails = [name, age, dateOfBirth].some(
+        (each: string | number | undefined) => each !== undefined
+      );
+      if (!isValidDetails) {
+        return ApiResponse.badRequest("Invalid details");
+      }
       const updatedUser = await this.userRepository.updateUser(id, user);
       if (!updatedUser) {
-        return ApiResponse.badRequest("User not found");
+        return ApiResponse.badRequest("Invalid id");
       }
       return ApiResponse.updated(updatedUser);
     } catch (error) {
@@ -69,7 +83,7 @@ export class UserServiceImpl extends IUserService {
     try {
       const user = await this.userRepository.deleteUser(id);
       if (!user) {
-        return ApiResponse.badRequest("User not found");
+        return ApiResponse.badRequest("Invalid id");
       }
       return ApiResponse.deleted();
     } catch (error) {

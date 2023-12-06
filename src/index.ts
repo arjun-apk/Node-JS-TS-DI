@@ -18,8 +18,10 @@ app.use(bodyParser.json());
 
 const port: number = parseInt(process.env.EXPOSE_PORT as string, 10);
 const hostName: string = process.env.IDENTITY_ISSUER_URL as string;
+const dependencyInjectorMode: string = process.env
+  .DEPENDENCY_INJECTOR_MODE as string;
 
-DependencyInjector.register("test");
+DependencyInjector.register(dependencyInjectorMode);
 
 const database: IDatabaseManager = Container.get(IDatabaseManager.identity);
 database.getConnection();

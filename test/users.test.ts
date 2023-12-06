@@ -4,8 +4,8 @@ import { User } from "../src/model/user";
 
 let createdUser: User;
 
-describe("GET /users", () => {
-  it("should return a list of users", async () => {
+describe("GET - /users", () => {
+  it("Get all users", async () => {
     const response = await request(app).get("/users");
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
@@ -30,8 +30,8 @@ describe("GET /users", () => {
   });
 });
 
-describe("POST /users", () => {
-  it("should create a new user", async () => {
+describe("POST - /users", () => {
+  it("Create user - Valid details", async () => {
     const newUser = {
       name: "John Doe",
       age: 30,
@@ -50,10 +50,23 @@ describe("POST /users", () => {
     });
     createdUser = response.body.data;
   });
+  it("Create user - Invalid details", async () => {
+    const newUser = {
+      name: "John Doe",
+    };
+    const response = await request(app).post("/users").send(newUser);
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      status: false,
+      data: null,
+      resultCode: 400,
+      message: "Invalid details",
+    });
+  });
 });
 
-describe("GET /users/:id", () => {
-  it("should return details of a specific user", async () => {
+describe("GET - /users/:id", () => {
+  it("Get user - Valid id", async () => {
     const response = await request(app).get(`/users/${createdUser.userId}`);
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
@@ -68,19 +81,29 @@ describe("GET /users/:id", () => {
       message: "Read successfully",
     });
   });
+  it("Get user - Invalid id", async () => {
+    const response = await request(app).get(
+      `/users/${createdUser.userId + 100}`
+    );
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      status: false,
+      data: null,
+      resultCode: 400,
+      message: "Invalid id",
+    });
+  });
 });
 
-describe("PUT /users/:id", () => {
-  it("should update details of a specific user", async () => {
+describe("PUT - /users/:id", () => {
+  it("Update user - Valid id and valid details", async () => {
     const updatedDetails = {
-      name: "Updated Name",
+      name: "Doe John",
       age: 31,
     };
-
     const response = await request(app)
       .put(`/users/${createdUser.userId}`)
       .send(updatedDetails);
-
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
       status: true,
@@ -93,10 +116,53 @@ describe("PUT /users/:id", () => {
       message: "Updated successfully",
     });
   });
+  it("Update user - Invalid id and valid details", async () => {
+    const updatedDetails = {
+      name: "John Doe",
+      age: 29,
+      dateOfBirth: "1993-06-15T12:00:00.000Z",
+    };
+    const response = await request(app)
+      .put(`/users/${createdUser.userId + 100}`)
+      .send(updatedDetails);
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      status: false,
+      data: null,
+      resultCode: 400,
+      message: "Invalid id",
+    });
+  });
+  it("Update user - Valid id and Invalid details", async () => {
+    const updatedDetails = {};
+    const response = await request(app)
+      .put(`/users/${createdUser.userId}`)
+      .send(updatedDetails);
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      status: false,
+      data: null,
+      resultCode: 400,
+      message: "Invalid details",
+    });
+  });
+  it("Update user - Invalid id and Invalid details", async () => {
+    const updatedDetails = {};
+    const response = await request(app)
+      .put(`/users/${createdUser.userId + 100}`)
+      .send(updatedDetails);
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      status: false,
+      data: null,
+      resultCode: 400,
+      message: "Invalid details",
+    });
+  });
 });
 
-describe("DELETE /users/:id", () => {
-  it("should delete a specific user", async () => {
+describe("DELETE - /users/:id", () => {
+  it("Delete user - Valid id", async () => {
     const response = await request(app).delete(`/users/${createdUser.userId}`);
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
@@ -104,6 +170,18 @@ describe("DELETE /users/:id", () => {
       data: null,
       resultCode: 200,
       message: "Deleted successfully",
+    });
+  });
+  it("Delete user - Invalid id", async () => {
+    const response = await request(app).delete(
+      `/users/${createdUser.userId + 100}`
+    );
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      status: false,
+      data: null,
+      resultCode: 400,
+      message: "Invalid id",
     });
   });
 });
