@@ -23,9 +23,6 @@ const dependencyInjectorMode: string = process.env
 
 DependencyInjector.register(dependencyInjectorMode);
 
-const database: IDatabaseManager = Container.get(IDatabaseManager.identity);
-database.getConnection();
-
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
 });

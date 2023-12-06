@@ -14,34 +14,34 @@ export class UserController {
   }
 
   async getUsers(req: Request, res: Response): Promise<void> {
-    this.logger.info("UserController : getUsers");
+    this.logger.info("getUsers");
     this.logger.info(`Is valid user : ${JSON.stringify(res.locals)}`);
     const result = await this.userService.getUsers();
     res.status(result.resultCode).json(result);
   }
 
   async getUser(req: Request, res: Response): Promise<void> {
-    this.logger.info("UserController : getUser");
+    this.logger.info("getUser");
     const id = Number(req.params.id);
     const result = await this.userService.getUser(id);
     res.status(result.resultCode).json(result);
   }
 
   async createUser(req: Request, res: Response): Promise<void> {
-    this.logger.info("UserController : createUser");
+    this.logger.info("createUser");
     const result = await this.userService.createUser(req.body);
     res.status(result.resultCode).json(result);
   }
 
   async updateUser(req: Request, res: Response): Promise<void> {
-    this.logger.info("UserController : updateUser");
+    this.logger.info("updateUser");
     const id = Number(req.params.id);
     const result = await this.userService.updateUser(id, req.body);
     res.status(result.resultCode).json(result);
   }
 
   async deleteUser(req: Request, res: Response): Promise<void> {
-    this.logger.info("UserController : deleteUser");
+    this.logger.info("deleteUser");
     const id = Number(req.params.id);
     const result = await this.userService.deleteUser(id);
     res.status(result.resultCode).json(result);

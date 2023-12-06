@@ -49,14 +49,14 @@ export class UserRepositoryImpl extends IUserRepository {
   }
 
   async getUsers(): Promise<User[]> {
-    this.logger.info("UserRepositoryImpl : getUsers");
+    this.logger.info("getUsers");
     const rows = await this.database.executeGetQuery(this.userQuery.findAll());
     const users: User[] = this.convertPascalToCamelCase(rows);
     return users;
   }
 
   async getUser(id: number): Promise<User | undefined> {
-    this.logger.info("UserRepositoryImpl : getUser");
+    this.logger.info("getUser");
     const rows = await this.database.executeGetQuery(
       this.userQuery.findById(id)
     );
@@ -65,7 +65,7 @@ export class UserRepositoryImpl extends IUserRepository {
   }
 
   async createUser(user: BaseUser): Promise<User | undefined> {
-    this.logger.info("UserRepositoryImpl : createUser");
+    this.logger.info("createUser");
     const { name, age, dateOfBirth } = user;
     const result = await this.database.executeRunQuery(
       this.userQuery.create(name, age, dateOfBirth)
@@ -82,7 +82,7 @@ export class UserRepositoryImpl extends IUserRepository {
     id: number,
     user: BaseUserOptional
   ): Promise<User | undefined> {
-    this.logger.info("UserRepositoryImpl : updateUser");
+    this.logger.info("updateUser");
     const { name, age, dateOfBirth } = user;
     const userDetails = await this.getUser(id);
     if (!userDetails) {
@@ -105,7 +105,7 @@ export class UserRepositoryImpl extends IUserRepository {
   }
 
   async deleteUser(id: number): Promise<string | undefined> {
-    this.logger.info("UserRepositoryImpl : deleteUser");
+    this.logger.info("deleteUser");
     const result = await this.database.executeRunQuery(
       this.userQuery.delete(id)
     );

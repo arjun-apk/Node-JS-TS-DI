@@ -19,6 +19,7 @@ export class DatabaseManagerImpl extends IDatabaseManager {
   });
 
   getConnection(): void {
+    this.logger.info("getConnection");
     this.connection.connect((err) => {
       if (err) {
         this.logger.info(`Database Connection ${err}`);
@@ -29,6 +30,7 @@ export class DatabaseManagerImpl extends IDatabaseManager {
   }
 
   executeGetQuery(query: string, values?: string[]): Promise<RowDataPacket[]> {
+    this.logger.info("executeGetQuery");
     return new Promise<RowDataPacket[]>((resolve, reject) => {
       this.connection.query(
         query,
@@ -45,6 +47,7 @@ export class DatabaseManagerImpl extends IDatabaseManager {
   }
 
   executeRunQuery(query: string, values?: string[]): Promise<ResultSetHeader> {
+    this.logger.info("executeRunQuery");
     return new Promise<ResultSetHeader>((resolve, reject) => {
       this.connection.query(
         query,

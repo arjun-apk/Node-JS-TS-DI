@@ -23,17 +23,17 @@ export class TestUserRepositoryImpl extends IUserRepository {
   logger: Logger = AppLogger.getInstance().getLogger(__filename);
 
   async getUsers(): Promise<User[]> {
-    this.logger.info("TestUserRepositoryImpl : getUsers");
+    this.logger.info("getUsers");
     return this.data;
   }
 
   async getUser(id: number): Promise<User | undefined> {
-    this.logger.info("TestUserRepositoryImpl : getUser");
+    this.logger.info("getUser");
     return this.data.find((each: User) => each.userId === id);
   }
 
   async createUser(user: BaseUser): Promise<User | undefined> {
-    this.logger.info("TestUserRepositoryImpl : createUser");
+    this.logger.info("createUser");
     const userId: number = this.data.length + 1;
     const newUser: User = { userId, ...user };
     this.data.push(newUser);
@@ -44,7 +44,7 @@ export class TestUserRepositoryImpl extends IUserRepository {
     id: number,
     user: BaseUserOptional
   ): Promise<User | undefined> {
-    this.logger.info("TestUserRepositoryImpl : updateUser");
+    this.logger.info("updateUser");
     const { name, age, dateOfBirth } = user;
     const userDetails = await this.getUser(id);
     if (!userDetails) {
@@ -66,7 +66,7 @@ export class TestUserRepositoryImpl extends IUserRepository {
   }
 
   async deleteUser(id: number): Promise<string | undefined> {
-    this.logger.info("TestUserRepositoryImpl : deleteUser");
+    this.logger.info("deleteUser");
     const userDetails = await this.getUser(id);
     if (!userDetails) {
       return userDetails;

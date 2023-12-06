@@ -1,10 +1,13 @@
 import { Request, Response, NextFunction } from "express";
+import { Logger } from "winston";
+import { AppLogger } from "../utilities/logger";
 
-const authMiddleWare = (req: Request, res: Response, next: NextFunction) => {
-  console.log("Middleware");
-  const isValidUser = true;
-  res.locals = { userId: "123321" };
-  next();
-};
+export class Middleware {
+  static logger: Logger = AppLogger.getInstance().getLogger(__filename);
 
-export default authMiddleWare;
+  static authMiddleware(req: Request, res: Response, next: NextFunction) {
+    Middleware.logger.info("authMiddleware");
+    res.locals = { userId: "abc" };
+    next();
+  }
+}

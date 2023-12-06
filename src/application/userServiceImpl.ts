@@ -12,7 +12,7 @@ export class UserServiceImpl extends IUserService {
   logger: Logger = AppLogger.getInstance().getLogger(__filename);
 
   async getUsers(): Promise<ApiResponse> {
-    this.logger.info("UserServiceImpl : getUsers");
+    this.logger.info("getUsers");
     try {
       const users = await this.userRepository.getUsers();
       return ApiResponse.read(users);
@@ -23,7 +23,7 @@ export class UserServiceImpl extends IUserService {
   }
 
   async getUser(id: number): Promise<ApiResponse> {
-    this.logger.info("UserServiceImpl : getUser");
+    this.logger.info("getUser");
     try {
       const user = await this.userRepository.getUser(id);
       if (!user) {
@@ -37,7 +37,7 @@ export class UserServiceImpl extends IUserService {
   }
 
   async createUser(user: BaseUser): Promise<ApiResponse> {
-    this.logger.info("UserServiceImpl : createUser");
+    this.logger.info("createUser");
     try {
       const { name, age, dateOfBirth } = user;
       const isValidDetails = [name, age, dateOfBirth].every(
@@ -58,7 +58,7 @@ export class UserServiceImpl extends IUserService {
   }
 
   async updateUser(id: number, user: BaseUserOptional): Promise<ApiResponse> {
-    this.logger.info("UserServiceImpl : updateUser");
+    this.logger.info("updateUser");
     try {
       const { name, age, dateOfBirth } = user;
       const isValidDetails = [name, age, dateOfBirth].some(
@@ -79,7 +79,7 @@ export class UserServiceImpl extends IUserService {
   }
 
   async deleteUser(id: number): Promise<ApiResponse> {
-    this.logger.info("UserServiceImpl : deleteUser");
+    this.logger.info("deleteUser");
     try {
       const user = await this.userRepository.deleteUser(id);
       if (!user) {

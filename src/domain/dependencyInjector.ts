@@ -28,6 +28,10 @@ export class DependencyInjector {
     //#region Repository registration.
     switch (mode) {
       case "mysql":
+        const database: IDatabaseManager = Container.get(
+          IDatabaseManager.identity
+        );
+        database.getConnection();
         Container.set(IUserRepository.identity, new UserRepositoryImpl());
         break;
       case "test":

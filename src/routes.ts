@@ -2,7 +2,7 @@ import express, { Express, Router, Request, Response } from "express";
 import { Logger } from "winston";
 import { UserController } from "./controller/userController";
 import { AppLogger } from "./utilities/logger";
-import authMiddleWare from "./middlewares/middleware";
+import { Middleware } from "./middlewares/middleware";
 
 export class Routes {
   app: Express;
@@ -26,6 +26,6 @@ export class Routes {
     // User routes
     this.router = this.userController.routes();
 
-    this.app.use(authMiddleWare, this.router);
+    this.app.use(Middleware.authMiddleware, this.router);
   }
 }
