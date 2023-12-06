@@ -7,3 +7,8 @@ export interface BaseUser {
 export interface User extends BaseUser {
   userId: number;
 }
+export interface BaseUserOptional {
+  name?: string;
+  age?: number;
+  dateOfBirth?: string;
+}

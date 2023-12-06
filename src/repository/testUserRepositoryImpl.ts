@@ -1,6 +1,6 @@
 import { Service } from "typedi";
 import { IUserRepository } from "../context/user/userRepository";
-import { BaseUser, User } from "../model/user";
+import { BaseUser, BaseUserOptional, User } from "../model/user";
 import { Logger } from "winston";
 import { AppLogger } from "../utilities/logger";
 
@@ -34,20 +34,28 @@ export class TestUserRepositoryImpl extends IUserRepository {
 
   async createUser(user: BaseUser): Promise<User | undefined> {
     this.logger.info("TestUserRepositoryImpl : createUser");
-    const userId: number = this.data.length;
+    const userId: number = this.data.length + 1;
     const newUser: User = { userId, ...user };
     this.data.push(newUser);
     return newUser;
   }
 
-  async updateUser(id: number, user: BaseUser): Promise<User | undefined> {
+  async updateUser(
+    id: number,
+    user: BaseUserOptional
+  ): Promise<User | undefined> {
     this.logger.info("TestUserRepositoryImpl : updateUser");
     const { name, age, dateOfBirth } = user;
     const userDetails = await this.getUser(id);
     if (!userDetails) {
       return userDetails;
     }
-    const updateUser: User = { ...userDetails, name, age, dateOfBirth };
+    const updateUser: User = {
+      userId: id,
+      name: name || userDetails.name,
+      age: age || userDetails.age,
+      dateOfBirth: dateOfBirth || userDetails.dateOfBirth,
+    };
     this.data = this.data.map((each: User) => {
       if (each.userId === id) {
         return updateUser;

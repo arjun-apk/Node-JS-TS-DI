@@ -71,7 +71,7 @@ export class UserServiceImpl extends IUserService {
       if (!user) {
         return ApiResponse.badRequest("User not found");
       }
-      return ApiResponse.deleted(user);
+      return ApiResponse.deleted();
     } catch (error) {
       this.logger.error(`${error}`);
       return ApiResponse.internalServerError();

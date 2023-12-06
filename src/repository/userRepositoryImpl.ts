@@ -1,6 +1,6 @@
 import Container, { Service } from "typedi";
 import { IUserRepository } from "../context/user/userRepository";
-import { BaseUser, User } from "../model/user";
+import { BaseUser, BaseUserOptional, User } from "../model/user";
 import { IDatabaseManager } from "../context/database/databaseManager";
 import { RowDataPacket } from "mysql2";
 import { Logger } from "winston";
@@ -78,7 +78,10 @@ export class UserRepositoryImpl extends IUserRepository {
     }
   }
 
-  async updateUser(id: number, user: BaseUser): Promise<User | undefined> {
+  async updateUser(
+    id: number,
+    user: BaseUserOptional
+  ): Promise<User | undefined> {
     this.logger.info("UserRepositoryImpl : updateUser");
     const { name, age, dateOfBirth } = user;
     const userDetails = await this.getUser(id);
