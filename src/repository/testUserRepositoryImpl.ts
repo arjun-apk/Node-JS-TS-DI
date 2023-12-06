@@ -23,19 +23,28 @@ export class TestUserRepositoryImpl extends IUserRepository {
   logger: Logger = AppLogger.getInstance().getLogger(__filename);
 
   async getUsers(): Promise<User[]> {
-    this.logger.info("getUsers");
-    return this.data;
+    this.logger.info(`Method : ${this.getUsers.name}`);
+    const users = this.data;
+    this.logger.info(`Users : ${users}`);
+    return users;
   }
 
   async getUser(id: number): Promise<User | undefined> {
-    this.logger.info("getUser");
-    return this.data.find((each: User) => each.userId === id);
+    this.logger.info(
+      `Method : ${this.getUser.name}\nUser id: ${JSON.stringify(id)}`
+    );
+    const user = this.data.find((each: User) => each.userId === id);
+    this.logger.info(`User : ${user}`);
+    return user;
   }
 
   async createUser(user: BaseUser): Promise<User | undefined> {
-    this.logger.info("createUser");
+    this.logger.info(
+      `Method : ${this.createUser.name}\nUser details: ${JSON.stringify(user)}`
+    );
     const userId: number = this.data.length + 1;
     const newUser: User = { userId, ...user };
+    this.logger.info(`New User: ${JSON.stringify(newUser)}`);
     this.data.push(newUser);
     return newUser;
   }
@@ -44,34 +53,42 @@ export class TestUserRepositoryImpl extends IUserRepository {
     id: number,
     user: BaseUserOptional
   ): Promise<User | undefined> {
-    this.logger.info("updateUser");
+    this.logger.info(
+      `Method : ${this.updateUser.name}\nUser id: ${JSON.stringify(
+        id
+      )}\nUser details: ${JSON.stringify(user)}`
+    );
     const { name, age, dateOfBirth } = user;
     const userDetails = await this.getUser(id);
     if (!userDetails) {
       return userDetails;
     }
-    const updateUser: User = {
+    const updatedUser: User = {
       userId: id,
       name: name || userDetails.name,
       age: age || userDetails.age,
       dateOfBirth: dateOfBirth || userDetails.dateOfBirth,
     };
+    this.logger.info(`Updated User: ${JSON.stringify(updatedUser)}`);
     this.data = this.data.map((each: User) => {
       if (each.userId === id) {
-        return updateUser;
+        return updatedUser;
       }
       return each;
     });
-    return updateUser;
+    return updatedUser;
   }
 
   async deleteUser(id: number): Promise<string | undefined> {
-    this.logger.info("deleteUser");
+    this.logger.info(
+      `Method : ${this.deleteUser.name}\nUser id: ${JSON.stringify(id)}`
+    );
     const userDetails = await this.getUser(id);
     if (!userDetails) {
       return userDetails;
     }
     this.data = this.data.filter((each: User) => each.userId !== id);
+    this.logger.info("User deleted successfully");
     return "User deleted successfully";
   }
 }

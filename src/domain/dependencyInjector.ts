@@ -39,6 +39,9 @@ export class DependencyInjector {
         break;
 
       default:
+        DependencyInjector.logger.info(
+          "Invalid Dependency Injector Mode : " + mode
+        );
         break;
     }
     //#end region
