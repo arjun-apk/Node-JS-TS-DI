@@ -1,10 +1,11 @@
 import { Container, Service } from "typedi";
+import { Logger } from "winston";
+import { z } from "zod";
 import { IUserService } from "../context/user/userService";
 import { IUserRepository } from "../context/user/userRepository";
 import { BaseUser, BaseUserOptional } from "../model/user";
 import ApiResponse from "../utilities/apiResponse";
 import { AppLogger } from "../utilities/logger";
-import { Logger } from "winston";
 
 @Service(IUserService.identity)
 export class UserServiceImpl extends IUserService {

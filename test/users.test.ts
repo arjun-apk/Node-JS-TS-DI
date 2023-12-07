@@ -4,8 +4,8 @@ import { User } from "../src/model/user";
 
 let createdUser: User;
 
-describe("GET - /users", () => {
-  it("Get all users", async () => {
+describe("GET - Get all users - /users", () => {
+  it("Valid details", async () => {
     const response = await request(app).get("/users");
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
@@ -30,10 +30,10 @@ describe("GET - /users", () => {
   });
 });
 
-describe("POST - /users", () => {
-  it("Create user - Valid details", async () => {
+describe("POST - Create user - /users", () => {
+  it("Valid details", async () => {
     const newUser = {
-      name: "John Doe",
+      name: "Abc Z",
       age: 30,
       dateOfBirth: "1993-05-15T12:00:00.000Z",
     };
@@ -50,9 +50,9 @@ describe("POST - /users", () => {
     });
     createdUser = response.body.data;
   });
-  it("Create user - Invalid details", async () => {
+  it("Invalid details", async () => {
     const newUser = {
-      name: "John Doe",
+      name: "Abc Z",
     };
     const response = await request(app).post("/users").send(newUser);
     expect(response.status).toBe(400);
@@ -65,8 +65,8 @@ describe("POST - /users", () => {
   });
 });
 
-describe("GET - /users/:id", () => {
-  it("Get user - Valid id", async () => {
+describe("GET - Get user - /users/:id", () => {
+  it("Valid id", async () => {
     const response = await request(app).get(`/users/${createdUser.userId}`);
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
@@ -81,7 +81,7 @@ describe("GET - /users/:id", () => {
       message: "Read successfully",
     });
   });
-  it("Get user - Invalid id", async () => {
+  it("Invalid id", async () => {
     const response = await request(app).get(
       `/users/${createdUser.userId + 100}`
     );
@@ -95,10 +95,10 @@ describe("GET - /users/:id", () => {
   });
 });
 
-describe("PUT - /users/:id", () => {
-  it("Update user - Valid id and valid details", async () => {
+describe("PUT - Update user - /users/:id", () => {
+  it("Valid id and valid details", async () => {
     const updatedDetails = {
-      name: "Doe John",
+      name: "Z Abc",
       age: 31,
     };
     const response = await request(app)
@@ -116,9 +116,9 @@ describe("PUT - /users/:id", () => {
       message: "Updated successfully",
     });
   });
-  it("Update user - Invalid id and valid details", async () => {
+  it("Invalid id and valid details", async () => {
     const updatedDetails = {
-      name: "John Doe",
+      name: "Abc Z",
       age: 29,
       dateOfBirth: "1993-06-15T12:00:00.000Z",
     };
@@ -133,7 +133,7 @@ describe("PUT - /users/:id", () => {
       message: "Invalid id",
     });
   });
-  it("Update user - Valid id and Invalid details", async () => {
+  it("Valid id and Invalid details", async () => {
     const updatedDetails = {};
     const response = await request(app)
       .put(`/users/${createdUser.userId}`)
@@ -146,7 +146,7 @@ describe("PUT - /users/:id", () => {
       message: "Invalid details",
     });
   });
-  it("Update user - Invalid id and Invalid details", async () => {
+  it("Invalid id and Invalid details", async () => {
     const updatedDetails = {};
     const response = await request(app)
       .put(`/users/${createdUser.userId + 100}`)
@@ -161,8 +161,8 @@ describe("PUT - /users/:id", () => {
   });
 });
 
-describe("DELETE - /users/:id", () => {
-  it("Delete user - Valid id", async () => {
+describe("DELETE - Delete user - /users/:id", () => {
+  it("Valid id", async () => {
     const response = await request(app).delete(`/users/${createdUser.userId}`);
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
@@ -172,7 +172,7 @@ describe("DELETE - /users/:id", () => {
       message: "Deleted successfully",
     });
   });
-  it("Delete user - Invalid id", async () => {
+  it("Invalid id", async () => {
     const response = await request(app).delete(
       `/users/${createdUser.userId + 100}`
     );
