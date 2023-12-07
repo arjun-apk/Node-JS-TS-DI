@@ -1,6 +1,5 @@
 import { Container, Service } from "typedi";
 import { Logger } from "winston";
-import { z } from "zod";
 import { IUserService } from "../context/user/userService";
 import { IUserRepository } from "../context/user/userRepository";
 import {
@@ -8,12 +7,12 @@ import {
   BaseUserOptional,
   BaseUserOptionalSchema,
   BaseUserSchema,
-  UserErrorMessage,
   UserId,
   UserIdSchema,
 } from "../model/user";
 import ApiResponse from "../utilities/apiResponse";
 import { AppLogger } from "../utilities/logger";
+import { UserMessage } from "../const/users/userMessage";
 
 @Service(IUserService.identity)
 export class UserServiceImpl extends IUserService {
@@ -25,7 +24,10 @@ export class UserServiceImpl extends IUserService {
       this.logger.info(`Method : ${this.getUsers.name}`);
       const users = await this.userRepository.getUsers();
       this.logger.info("Users : " + JSON.stringify(users));
-      return ApiResponse.read(users);
+      if (!users) {
+        return ApiResponse.conflict();
+      }
+      return ApiResponse.read(users, UserMessage.success.read);
     } catch (error) {
       this.logger.error(`${error}`);
       return ApiResponse.internalServerError();
@@ -41,16 +43,16 @@ export class UserServiceImpl extends IUserService {
       if (!validId.success) {
         this.logger.info(JSON.stringify(validId.error));
         return ApiResponse.badRequest(
-          UserErrorMessage.getErrorMessage(validId.error.issues)
+          UserMessage.getErrorMessage(validId.error.issues)
         );
       }
       const user = await this.userRepository.getUser(id);
       this.logger.info("User : " + JSON.stringify(user));
       if (!user) {
-        this.logger.info("Invalid user id");
-        return ApiResponse.badRequest("Invalid id");
+        this.logger.info(UserMessage.failure.invalidId);
+        return ApiResponse.badRequest(UserMessage.failure.invalidId);
       }
-      return ApiResponse.read(user);
+      return ApiResponse.read(user, UserMessage.success.read);
     } catch (error) {
       this.logger.error(`${error}`);
       return ApiResponse.internalServerError();
@@ -68,16 +70,15 @@ export class UserServiceImpl extends IUserService {
       if (!validUser.success) {
         this.logger.info(JSON.stringify(validUser.error));
         return ApiResponse.badRequest(
-          UserErrorMessage.getErrorMessage(validUser.error.issues)
+          UserMessage.getErrorMessage(validUser.error.issues)
         );
       }
       const newUser = await this.userRepository.createUser(user);
       this.logger.info("New user : " + JSON.stringify(newUser));
       if (!newUser) {
-        this.logger.info("New user is undefined");
-        return ApiResponse.badRequest();
+        return ApiResponse.conflict();
       }
-      return ApiResponse.created(newUser);
+      return ApiResponse.created(newUser, UserMessage.success.created);
     } catch (error) {
       this.logger.error(`${error}`);
       return ApiResponse.internalServerError();
@@ -95,23 +96,23 @@ export class UserServiceImpl extends IUserService {
       if (!validId.success) {
         this.logger.info(JSON.stringify(validId.error));
         return ApiResponse.badRequest(
-          UserErrorMessage.getErrorMessage(validId.error.issues)
+          UserMessage.getErrorMessage(validId.error.issues)
         );
       }
       const validUser = BaseUserOptionalSchema.safeParse(user);
       if (!validUser.success) {
         this.logger.info(JSON.stringify(validUser.error));
         return ApiResponse.badRequest(
-          UserErrorMessage.getErrorMessage(validUser.error.issues)
+          UserMessage.getErrorMessage(validUser.error.issues)
         );
       }
       const updatedUser = await this.userRepository.updateUser(id, user);
       this.logger.info("Updated user : " + JSON.stringify(updatedUser));
       if (!updatedUser) {
-        this.logger.info("Invalid user id");
-        return ApiResponse.badRequest("Invalid id");
+        this.logger.info(UserMessage.failure.invalidId);
+        return ApiResponse.badRequest(UserMessage.failure.invalidId);
       }
-      return ApiResponse.updated(updatedUser);
+      return ApiResponse.updated(updatedUser, UserMessage.success.updated);
     } catch (error) {
       this.logger.error(`${error}`);
       return ApiResponse.internalServerError();
@@ -127,15 +128,15 @@ export class UserServiceImpl extends IUserService {
       if (!validId.success) {
         this.logger.info(JSON.stringify(validId.error));
         return ApiResponse.badRequest(
-          UserErrorMessage.getErrorMessage(validId.error.issues)
+          UserMessage.getErrorMessage(validId.error.issues)
         );
       }
       const user = await this.userRepository.deleteUser(id);
       if (!user) {
-        this.logger.info("Invalid user id");
-        return ApiResponse.badRequest("Invalid id");
+        this.logger.info(UserMessage.failure.invalidId);
+        return ApiResponse.badRequest(UserMessage.failure.invalidId);
       }
-      return ApiResponse.deleted();
+      return ApiResponse.deleted(UserMessage.success.deleted);
     } catch (error) {
       this.logger.error(`${error}`);
       return ApiResponse.internalServerError();

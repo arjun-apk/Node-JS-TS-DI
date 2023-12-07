@@ -3,7 +3,7 @@ import { BaseUser, BaseUserOptional, User, UserId } from "../../model/user";
 export abstract class IUserRepository {
   static identity: string = "IUserRepository";
 
-  abstract getUsers(): Promise<User[]>;
+  abstract getUsers(): Promise<User[] | undefined>;
   abstract getUser(id: UserId): Promise<User | undefined>;
   abstract createUser(user: BaseUser): Promise<User | undefined>;
   abstract updateUser(

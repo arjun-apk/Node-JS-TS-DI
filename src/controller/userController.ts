@@ -1,4 +1,4 @@
-import express, { Router, Request, Response } from "express";
+import { Request, Response } from "express";
 import Container from "typedi";
 import { IUserService } from "../context/user/userService";
 import { AppLogger } from "../utilities/logger";

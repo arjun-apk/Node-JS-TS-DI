@@ -5,41 +5,7 @@ import { IDatabaseManager } from "../context/database/databaseManager";
 import { RowDataPacket } from "mysql2";
 import { Logger } from "winston";
 import { AppLogger } from "../utilities/logger";
-
-class UserQuery {
-  logger: Logger = AppLogger.getInstance().getLogger(__filename);
-  tableName = "users";
-  userId = "UserId";
-  name = "Name";
-  age = "Age";
-  DateOfBirth = "DateOfBirth";
-
-  findAll(): string {
-    const query = `SELECT * FROM ${this.tableName}`;
-    this.logger.info(`Find all users query : ${query}`);
-    return query;
-  }
-  findById(id: UserId): string {
-    const query = `SELECT * FROM ${this.tableName} WHERE ${this.userId} = ${id}`;
-    this.logger.info(`Find user by id query : ${query}`);
-    return query;
-  }
-  create(name: string, age: number, dateOfBirth: string): string {
-    const query = `INSERT INTO ${this.tableName} (${this.name}, ${this.age}, ${this.DateOfBirth}) VALUES ('${name}', ${age}, '${dateOfBirth}')`;
-    this.logger.info(`Create user query : ${query}`);
-    return query;
-  }
-  update(name: string, age: number, dateOfBirth: string, id: UserId): string {
-    const query = `UPDATE ${this.tableName} SET ${this.name} = '${name}', ${this.age} = ${age}, ${this.DateOfBirth} = '${dateOfBirth}' WHERE ${this.userId} = ${id}`;
-    this.logger.info(`Update user query : ${query}`);
-    return query;
-  }
-  delete(id: UserId): string {
-    const query = `DELETE FROM ${this.tableName} WHERE ${this.userId} = ${id}`;
-    this.logger.info(`Delete user query : ${query}`);
-    return query;
-  }
-}
+import { UserQuery } from "../const/users/userQuery";
 
 @Service(IUserRepository.identity)
 export class UserRepositoryImpl extends IUserRepository {
@@ -56,12 +22,14 @@ export class UserRepositoryImpl extends IUserRepository {
     }));
   }
 
-  async getUsers(): Promise<User[]> {
+  async getUsers(): Promise<User[] | undefined> {
     this.logger.info(`Method : ${this.getUsers.name}`);
     const rows = await this.database.executeGetQuery(this.userQuery.findAll());
     this.logger.info("Result : " + JSON.stringify(rows));
-    const users: User[] = this.convertPascalToCamelCase(rows);
-    return users;
+    if (rows !== undefined) {
+      const users: User[] = this.convertPascalToCamelCase(rows);
+      return users;
+    }
   }
 
   async getUser(id: UserId): Promise<User | undefined> {

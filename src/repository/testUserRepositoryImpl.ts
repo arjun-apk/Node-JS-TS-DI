@@ -6,20 +6,7 @@ import { AppLogger } from "../utilities/logger";
 
 @Service(IUserRepository.identity)
 export class TestUserRepositoryImpl extends IUserRepository {
-  data: User[] = [
-    {
-      userId: 1,
-      name: "Arjun P",
-      age: 22,
-      dateOfBirth: "2001-04-03T18:30:00.000Z",
-    },
-    {
-      userId: 2,
-      name: "APK",
-      age: 23,
-      dateOfBirth: "2001-04-03T18:30:00.000Z",
-    },
-  ];
+  data: User[] = [];
   logger: Logger = AppLogger.getInstance().getLogger(__filename);
 
   async getUsers(): Promise<User[]> {

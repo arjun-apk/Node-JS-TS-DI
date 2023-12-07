@@ -1,53 +1,23 @@
 import { z } from "zod";
-
-export class UserErrorMessage {
-  static _name = {
-    required: "Name required",
-    invalidType: "Name must be a string",
-  };
-
-  static age = {
-    required: "Age required",
-    invalidType: "Age must be a number",
-    positive: "Age must be a positive number",
-  };
-
-  static dateOfBirth = {
-    required: "Date of birth required",
-    invalidType: "Date of birth must be a string",
-    datetime: "Date of birth must be a string representing a datetime object",
-  };
-
-  static userId = {
-    required: "Id required",
-    invalidType: "Id must be a number",
-    positive: "Id must be a positive number",
-  };
-
-  static getErrorMessage(issues: z.ZodIssue[]) {
-    let errorMessage = "";
-    issues.forEach((value) => (errorMessage += `${value.message}, `));
-    return errorMessage.slice(0, -2) + ".";
-  }
-}
+import { UserMessage } from "../const/users/userMessage";
 
 export const BaseUserSchema = z.object({
   name: z.string({
-    invalid_type_error: UserErrorMessage._name.invalidType,
-    required_error: UserErrorMessage._name.required,
+    invalid_type_error: UserMessage._name.invalidType,
+    required_error: UserMessage._name.required,
   }),
   age: z
     .number({
-      invalid_type_error: UserErrorMessage.age.invalidType,
-      required_error: UserErrorMessage.age.required,
+      invalid_type_error: UserMessage.age.invalidType,
+      required_error: UserMessage.age.required,
     })
-    .positive(UserErrorMessage.age.positive),
+    .positive(UserMessage.age.positive),
   dateOfBirth: z
     .string({
-      invalid_type_error: UserErrorMessage.dateOfBirth.invalidType,
-      required_error: UserErrorMessage.dateOfBirth.required,
+      invalid_type_error: UserMessage.dateOfBirth.invalidType,
+      required_error: UserMessage.dateOfBirth.required,
     })
-    .datetime({ message: UserErrorMessage.dateOfBirth.datetime }),
+    .datetime({ message: UserMessage.dateOfBirth.datetime }),
 });
 
 export type BaseUser = z.infer<typeof BaseUserSchema>;
@@ -64,9 +34,9 @@ export type User = z.infer<typeof UserSchema>;
 
 export const UserIdSchema = z
   .number({
-    invalid_type_error: UserErrorMessage.userId.invalidType,
-    required_error: UserErrorMessage.userId.required,
+    invalid_type_error: UserMessage.userId.invalidType,
+    required_error: UserMessage.userId.invalidType,
   })
-  .positive(UserErrorMessage.userId.positive);
+  .positive(UserMessage.userId.positive);
 
 export type UserId = z.infer<typeof UserIdSchema>;
