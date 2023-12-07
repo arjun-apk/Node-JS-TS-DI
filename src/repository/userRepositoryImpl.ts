@@ -1,6 +1,6 @@
 import Container, { Service } from "typedi";
 import { IUserRepository } from "../context/user/userRepository";
-import { BaseUser, BaseUserOptional, User } from "../model/user";
+import { BaseUser, BaseUserOptional, User, UserId } from "../model/user";
 import { IDatabaseManager } from "../context/database/databaseManager";
 import { RowDataPacket } from "mysql2";
 import { Logger } from "winston";
@@ -19,7 +19,7 @@ class UserQuery {
     this.logger.info(`Find all users query : ${query}`);
     return query;
   }
-  findById(id: number): string {
+  findById(id: UserId): string {
     const query = `SELECT * FROM ${this.tableName} WHERE ${this.userId} = ${id}`;
     this.logger.info(`Find user by id query : ${query}`);
     return query;
@@ -29,12 +29,12 @@ class UserQuery {
     this.logger.info(`Create user query : ${query}`);
     return query;
   }
-  update(name: string, age: number, dateOfBirth: string, id: number): string {
+  update(name: string, age: number, dateOfBirth: string, id: UserId): string {
     const query = `UPDATE ${this.tableName} SET ${this.name} = '${name}', ${this.age} = ${age}, ${this.DateOfBirth} = '${dateOfBirth}' WHERE ${this.userId} = ${id}`;
     this.logger.info(`Update user query : ${query}`);
     return query;
   }
-  delete(id: number): string {
+  delete(id: UserId): string {
     const query = `DELETE FROM ${this.tableName} WHERE ${this.userId} = ${id}`;
     this.logger.info(`Delete user query : ${query}`);
     return query;
@@ -64,7 +64,7 @@ export class UserRepositoryImpl extends IUserRepository {
     return users;
   }
 
-  async getUser(id: number): Promise<User | undefined> {
+  async getUser(id: UserId): Promise<User | undefined> {
     this.logger.info(
       `Method : ${this.getUser.name}\nUser id: ${JSON.stringify(id)}`
     );
@@ -95,7 +95,7 @@ export class UserRepositoryImpl extends IUserRepository {
   }
 
   async updateUser(
-    id: number,
+    id: UserId,
     user: BaseUserOptional
   ): Promise<User | undefined> {
     this.logger.info(
@@ -126,7 +126,7 @@ export class UserRepositoryImpl extends IUserRepository {
     }
   }
 
-  async deleteUser(id: number): Promise<string | undefined> {
+  async deleteUser(id: UserId): Promise<string | undefined> {
     this.logger.info(
       `Method : ${this.deleteUser.name}\nUser id: ${JSON.stringify(id)}`
     );

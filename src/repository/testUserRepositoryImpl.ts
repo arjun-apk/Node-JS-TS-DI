@@ -25,7 +25,7 @@ export class TestUserRepositoryImpl extends IUserRepository {
   async getUsers(): Promise<User[]> {
     this.logger.info(`Method : ${this.getUsers.name}`);
     const users = this.data;
-    this.logger.info(`Users : ${users}`);
+    this.logger.info(`Users : ${JSON.stringify(users)}`);
     return users;
   }
 
@@ -34,7 +34,7 @@ export class TestUserRepositoryImpl extends IUserRepository {
       `Method : ${this.getUser.name}\nUser id: ${JSON.stringify(id)}`
     );
     const user = this.data.find((each: User) => each.userId === id);
-    this.logger.info(`User : ${user}`);
+    this.logger.info(`User : ${JSON.stringify(user)}`);
     return user;
   }
 

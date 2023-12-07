@@ -3,7 +3,15 @@ import { Logger } from "winston";
 import { z } from "zod";
 import { IUserService } from "../context/user/userService";
 import { IUserRepository } from "../context/user/userRepository";
-import { BaseUser, BaseUserOptional } from "../model/user";
+import {
+  BaseUser,
+  BaseUserOptional,
+  BaseUserOptionalSchema,
+  BaseUserSchema,
+  UserErrorMessage,
+  UserId,
+  UserIdSchema,
+} from "../model/user";
 import ApiResponse from "../utilities/apiResponse";
 import { AppLogger } from "../utilities/logger";
 
@@ -24,11 +32,18 @@ export class UserServiceImpl extends IUserService {
     }
   }
 
-  async getUser(id: number): Promise<ApiResponse> {
+  async getUser(id: UserId): Promise<ApiResponse> {
     try {
       this.logger.info(
         `Method : ${this.getUser.name}\nUser id: ${JSON.stringify(id)}`
       );
+      const validId = UserIdSchema.safeParse(id);
+      if (!validId.success) {
+        this.logger.info(JSON.stringify(validId.error));
+        return ApiResponse.badRequest(
+          UserErrorMessage.getErrorMessage(validId.error.issues)
+        );
+      }
       const user = await this.userRepository.getUser(id);
       this.logger.info("User : " + JSON.stringify(user));
       if (!user) {
@@ -49,13 +64,12 @@ export class UserServiceImpl extends IUserService {
           user
         )}`
       );
-      const { name, age, dateOfBirth } = user;
-      const isValidDetails = [name, age, dateOfBirth].every(
-        (each: string | number) => each !== undefined
-      );
-      if (!isValidDetails) {
-        this.logger.info("Invalid user details: " + JSON.stringify(user));
-        return ApiResponse.badRequest("Invalid details");
+      const validUser = BaseUserSchema.safeParse(user);
+      if (!validUser.success) {
+        this.logger.info(JSON.stringify(validUser.error));
+        return ApiResponse.badRequest(
+          UserErrorMessage.getErrorMessage(validUser.error.issues)
+        );
       }
       const newUser = await this.userRepository.createUser(user);
       this.logger.info("New user : " + JSON.stringify(newUser));
@@ -70,20 +84,26 @@ export class UserServiceImpl extends IUserService {
     }
   }
 
-  async updateUser(id: number, user: BaseUserOptional): Promise<ApiResponse> {
+  async updateUser(id: UserId, user: BaseUserOptional): Promise<ApiResponse> {
     try {
       this.logger.info(
         `Method : ${this.updateUser.name}\nUser id: ${JSON.stringify(
           id
         )}\nUser Details : ${JSON.stringify(user)}`
       );
-      const { name, age, dateOfBirth } = user;
-      const isValidDetails = [name, age, dateOfBirth].some(
-        (each: string | number | undefined) => each !== undefined
-      );
-      if (!isValidDetails) {
-        this.logger.info("Invalid user details: " + JSON.stringify(user));
-        return ApiResponse.badRequest("Invalid details");
+      const validId = UserIdSchema.safeParse(id);
+      if (!validId.success) {
+        this.logger.info(JSON.stringify(validId.error));
+        return ApiResponse.badRequest(
+          UserErrorMessage.getErrorMessage(validId.error.issues)
+        );
+      }
+      const validUser = BaseUserOptionalSchema.safeParse(user);
+      if (!validUser.success) {
+        this.logger.info(JSON.stringify(validUser.error));
+        return ApiResponse.badRequest(
+          UserErrorMessage.getErrorMessage(validUser.error.issues)
+        );
       }
       const updatedUser = await this.userRepository.updateUser(id, user);
       this.logger.info("Updated user : " + JSON.stringify(updatedUser));
@@ -98,11 +118,18 @@ export class UserServiceImpl extends IUserService {
     }
   }
 
-  async deleteUser(id: number): Promise<ApiResponse> {
+  async deleteUser(id: UserId): Promise<ApiResponse> {
     try {
       this.logger.info(
         `Method : ${this.deleteUser.name}\nUser id: ${JSON.stringify(id)}`
       );
+      const validId = UserIdSchema.safeParse(id);
+      if (!validId.success) {
+        this.logger.info(JSON.stringify(validId.error));
+        return ApiResponse.badRequest(
+          UserErrorMessage.getErrorMessage(validId.error.issues)
+        );
+      }
       const user = await this.userRepository.deleteUser(id);
       if (!user) {
         this.logger.info("Invalid user id");
