@@ -2,10 +2,13 @@ import { z } from "zod";
 import { UserMessage } from "../const/users/userMessage";
 
 export const BaseUserSchema = z.object({
-  name: z.string({
-    invalid_type_error: UserMessage._name.invalidType,
-    required_error: UserMessage._name.required,
-  }),
+  name: z
+    .string({
+      invalid_type_error: UserMessage._name.invalidType,
+      required_error: UserMessage._name.required,
+    })
+    .trim()
+    .min(1, UserMessage._name.empty),
   age: z
     .number({
       invalid_type_error: UserMessage.age.invalidType,
@@ -22,7 +25,11 @@ export const BaseUserSchema = z.object({
 
 export type BaseUser = z.infer<typeof BaseUserSchema>;
 
-export const BaseUserOptionalSchema = BaseUserSchema.partial();
+export const BaseUserOptionalSchema = BaseUserSchema.partial().refine(
+  ({ name, age, dateOfBirth }) =>
+    name !== undefined || age !== undefined || dateOfBirth !== undefined,
+  { message: UserMessage.failure.minimumField }
+);
 
 export type BaseUserOptional = z.infer<typeof BaseUserOptionalSchema>;
 

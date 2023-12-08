@@ -4,6 +4,7 @@ export class UserMessage {
   static _name = {
     required: "Name required",
     invalidType: "Name must be a string",
+    empty: "Name must contain at least one character",
   };
 
   static age = {
@@ -39,5 +40,6 @@ export class UserMessage {
 
   static failure = {
     invalidId: "Invalid user id",
+    minimumField: "One of the fields must be defined",
   };
 }

@@ -1,22 +1,32 @@
 import request from "supertest";
 import { app } from "../src/index";
-import { BaseUserSchema, User, UserIdSchema } from "../src/model/user";
+import {
+  BaseUserOptional,
+  BaseUserOptionalSchema,
+  BaseUserSchema,
+  User,
+  UserIdSchema,
+} from "../src/model/user";
 import { UserMessage } from "../src/const/users/userMessage";
 
 let users: User[] = [];
 let createdUser: User;
 
-describe("GET - Get all users - /users", () => {
-  it("Valid details", async () => {
+const runGetAllUsersTest = (title: string, data: User[]) => {
+  it(title, async () => {
     const response = await request(app).get("/users");
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
       status: true,
-      data: [],
+      data,
       resultCode: 200,
       message: UserMessage.success.read,
     });
   });
+};
+
+describe("GET - Get all users 1 - /users", () => {
+  runGetAllUsersTest("Before create user", []);
 });
 
 describe("POST - Create user - /users", () => {
@@ -53,6 +63,11 @@ describe("POST - Create user - /users", () => {
   });
   const invalidTestCases = [
     {
+      age: 30,
+      dateOfBirth: "1993-05-15T12:00:00.000Z",
+    },
+    {
+      name: "",
       age: 30,
       dateOfBirth: "1993-05-15T12:00:00.000Z",
     },
@@ -139,6 +154,10 @@ describe("POST - Create user - /users", () => {
   });
 });
 
+describe("GET - Get all users 2 - /users", () => {
+  runGetAllUsersTest("After create user", users);
+});
+
 describe("GET - Get user - /users/:id", () => {
   const validTestCases = [{ userId: 1 }, { userId: 2 }];
   validTestCases.forEach((eachValidTestCase, index) => {
@@ -202,98 +221,132 @@ describe("GET - Get user - /users/:id", () => {
   });
 });
 
-// describe("PUT - Update user - /users/:id", () => {
-//   const validTestCases = [
-//     {
-//       name: "Abc",
-//       age: 25,
-//       dateOfBirth: "1993-07-15T12:00:00.000Z",
-//     },
-//     {
-//       name: "Abc Z",
-//     },
-//     {
-//       age: 30,
-//     },
-//     {
-//       dateOfBirth: "1993-05-15T12:00:00.000Z",
-//     },
-//     {
-//       name: "Abc Z",
-//       age: 30,
-//     },
-//     {
-//       name: "Abc Z",
-//       dateOfBirth: "1993-05-15T12:00:00.000Z",
-//     },
-//     {
-//       age: 30,
-//       dateOfBirth: "1993-05-15T12:00:00.000Z",
-//     },
-//   ];
-//   validTestCases.forEach((eachValidTestCase, index) => {
+describe("PUT - Update user - /users/:id", () => {
+  const validTestCases = [
+    {
+      name: "Abc",
+      age: 25,
+      dateOfBirth: "1993-07-15T12:00:00.000Z",
+    },
+    {
+      name: "Abc Z",
+      age: 30,
+    },
+    {
+      name: "Abc Z",
+      dateOfBirth: "1993-05-15T12:00:00.000Z",
+    },
+    {
+      age: 30,
+      dateOfBirth: "1993-05-15T12:00:00.000Z",
+    },
+    {
+      name: "Abc Z",
+    },
+    {
+      age: 30,
+    },
+    {
+      dateOfBirth: "1993-05-15T12:00:00.000Z",
+    },
+  ];
+  validTestCases.forEach((eachValidTestCase: BaseUserOptional, index) => {
+    it(`Valid details - Test case ${index + 1}`, async () => {
+      const userId = 1;
+      const response = await request(app)
+        .put(`/users/${1}`)
+        .send(eachValidTestCase);
+      const updatedUser = { ...users[0], ...eachValidTestCase };
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        status: true,
+        data: updatedUser,
+        resultCode: 200,
+        message: UserMessage.success.updated,
+      });
+      users = users.map((eachUser) => {
+        if (eachUser.userId === userId) return updatedUser;
+        return eachUser;
+      });
+    });
+  });
+  const inValidTestCases1 = [
+    {},
+    {
+      name: 10,
+      age: "25",
+      dateOfBirth: "1993-07-15T12:00:00.000Z",
+    },
+    {
+      name: "",
+      age: "25",
+      dateOfBirth: "1993-07-15T12:00:00.000Z",
+    },
+    {
+      name: null,
+      age: -30,
+    },
+    {
+      name: undefined,
+      dateOfBirth: "1993-05-15",
+    },
+    {
+      name: null,
+      dateOfBirth: "1993-05-15:00:00.000Z",
+    },
+    {
+      age: 30,
+      dateOfBirth: "1993-05-15T12;00:00.000Z",
+    },
+    {
+      name: "",
+    },
+    {
+      age: 30,
+    },
+    {
+      dateOfBirth: "1993-05-15T12:00:00.000Z",
+    },
+  ];
+  inValidTestCases1.forEach((eachInvalidTestCase, index) => {
+    it(`Invalid details - Test case ${index + 1}`, async () => {
+      const validUser = BaseUserOptionalSchema.safeParse(eachInvalidTestCase);
+      if (!validUser.success) {
+        const response = await request(app)
+          .put(`/users/${2}`)
+          .send(eachInvalidTestCase);
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({
+          status: false,
+          data: null,
+          resultCode: 400,
+          message: UserMessage.getErrorMessage(validUser.error.issues),
+        });
+      }
+    });
+  });
+  const inValidTestCases2 = [{ userId: 100 }, { userId: 200 }];
+  inValidTestCases2.forEach((eachInvalidTestCase, index) => {
+    it(`Invalid id - Test case ${index + 1}`, async () => {
+      const response = await request(app)
+        .put(`/users/${eachInvalidTestCase.userId}`)
+        .send({
+          age: 30,
+        });
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        status: false,
+        data: null,
+        resultCode: 400,
+        message: UserMessage.failure.invalidId,
+      });
+    });
+  });
+});
 
-//     it("Valid id and valid details", async () => {
-//       const response = await request(app)
-//         .put(`/users/${createdUser.userId}`)
-//         .send(eachValidTestCase);
-//       expect(response.status).toBe(200);
-//       expect(response.body).toEqual({
-//         status: true,
-//         data: {
-//           userId: createdUser.userId,
-//           ...eachValidTestCase,
-//           dateOfBirth: createdUser.dateOfBirth,
-//         },
-//         resultCode: 200,
-//         message: UserMessage.success.updated,
-//       });
-//     });
-//   })
-//   it("Invalid id and valid details", async () => {
-//     const updatedDetails = {
-//       name: "Abc Z",
-//       age: 29,
-//       dateOfBirth: "1993-06-15T12:00:00.000Z",
-//     };
-//     const response = await request(app)
-//       .put(`/users/${createdUser.userId + 100}`)
-//       .send(updatedDetails);
-//     expect(response.status).toBe(400);
-//     expect(response.body).toEqual({
-//       status: false,
-//       data: null,
-//       resultCode: 400,
-//       message: "Invalid id",
-//     });
-//   });
-//   it("Valid id and Invalid details", async () => {
-//     const updatedDetails = {};
-//     const response = await request(app)
-//       .put(`/users/${createdUser.userId}`)
-//       .send(updatedDetails);
-//     expect(response.status).toBe(400);
-//     expect(response.body).toEqual({
-//       status: false,
-//       data: null,
-//       resultCode: 400,
-//       message: "Invalid details",
-//     });
-//   });
-//   it("Invalid id and Invalid details", async () => {
-//     const updatedDetails = {};
-//     const response = await request(app)
-//       .put(`/users/${createdUser.userId + 100}`)
-//       .send(updatedDetails);
-//     expect(response.status).toBe(400);
-//     expect(response.body).toEqual({
-//       status: false,
-//       data: null,
-//       resultCode: 400,
-//       message: "Invalid details",
-//     });
-//   });
-// });
+describe("GET - Get all users 3 - /users", () => {
+  runGetAllUsersTest("After update user", users);
+});
 
 describe("DELETE - Delete user - /users/:id", () => {
   const validTestCases = [{ userId: 1 }, { userId: 2 }];
@@ -345,4 +398,8 @@ describe("DELETE - Delete user - /users/:id", () => {
       }
     });
   });
+});
+
+describe("GET - Get all users 4 - /users", () => {
+  runGetAllUsersTest("After delete user", []);
 });

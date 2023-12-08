@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import Container from "typedi";
+import { Logger } from "winston";
 import { IUserService } from "../context/user/userService";
 import { AppLogger } from "../utilities/logger";
-import { Logger } from "winston";
 import { IBaseController } from "./baseController";
 
 export class UserController extends IBaseController {
@@ -70,7 +70,6 @@ export class UserController extends IBaseController {
         req.params.id
       )}`
     );
-    this.logger.info(``);
     const id = Number(req.params.id);
     this.logger.info(`Request body : ${JSON.stringify(req.body)}`);
     const result = await this.userService.deleteUser(id);
