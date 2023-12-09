@@ -2,7 +2,7 @@ import { Service } from "typedi";
 import dotenv from "dotenv";
 import mysql, { QueryError, ResultSetHeader, RowDataPacket } from "mysql2";
 import { IDatabaseManager } from "../context/database/databaseManager";
-import { AppLogger } from "../utilities/logger";
+import { AppLogger } from "../logger";
 import { Logger } from "winston";
 
 dotenv.config();

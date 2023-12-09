@@ -7,7 +7,7 @@ import { IUserService } from "../context/user/userService";
 import { UserServiceImpl } from "../application/userServiceImpl";
 import { TestUserRepositoryImpl } from "../repository/testUserRepositoryImpl";
 import { Logger } from "winston";
-import { AppLogger } from "../utilities/logger";
+import { AppLogger } from "../logger";
 
 /**
  * Dependency Injector

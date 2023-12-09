@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { IBaseController } from "./baseController";
 import { Logger } from "winston";
-import { AppLogger } from "../utilities/logger";
+import { AppLogger } from "../logger";
 
 export class HomeController extends IBaseController {
   path: string = "/";

@@ -4,7 +4,7 @@ import { BaseUser, BaseUserOptional, User, UserId } from "../model/user";
 import { IDatabaseManager } from "../context/database/databaseManager";
 import { RowDataPacket } from "mysql2";
 import { Logger } from "winston";
-import { AppLogger } from "../utilities/logger";
+import { AppLogger } from "../logger";
 import { UserQuery } from "../const/users/userQuery";
 
 @Service(IUserRepository.identity)

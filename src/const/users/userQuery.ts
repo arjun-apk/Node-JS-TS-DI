@@ -1,5 +1,5 @@
 import { Logger } from "winston";
-import { AppLogger } from "../../utilities/logger";
+import { AppLogger } from "../../logger";
 import { UserId } from "../../model/user";
 
 export class UserQuery {

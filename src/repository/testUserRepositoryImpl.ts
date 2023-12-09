@@ -2,7 +2,7 @@ import { Service } from "typedi";
 import { IUserRepository } from "../context/user/userRepository";
 import { BaseUser, BaseUserOptional, User } from "../model/user";
 import { Logger } from "winston";
-import { AppLogger } from "../utilities/logger";
+import { AppLogger } from "../logger";
 
 @Service(IUserRepository.identity)
 export class TestUserRepositoryImpl extends IUserRepository {

@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 import morgan from "morgan";
 import cors from "cors";
 import { DependencyInjector } from "./domain/dependencyInjector";
-import { AppLogger } from "./utilities/logger";
+import { AppLogger } from "./logger";
 import { IBaseController } from "./controller/baseController";
 import { HomeController } from "./controller/homeController";
 import { UserController } from "./controller/userController";

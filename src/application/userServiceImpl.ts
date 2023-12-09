@@ -11,7 +11,7 @@ import {
   UserIdSchema,
 } from "../model/user";
 import ApiResponse from "../utilities/apiResponse";
-import { AppLogger } from "../utilities/logger";
+import { AppLogger } from "../logger";
 import { UserMessage } from "../const/users/userMessage";
 
 @Service(IUserService.identity)

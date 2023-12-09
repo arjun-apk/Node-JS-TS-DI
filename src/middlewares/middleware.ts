@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Logger } from "winston";
-import { AppLogger } from "../utilities/logger";
+import { AppLogger } from "../logger";
 
 export class Middleware {
   static logger: Logger = AppLogger.getInstance().getLogger(__filename);

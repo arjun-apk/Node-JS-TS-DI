@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import Container from "typedi";
 import { Logger } from "winston";
 import { IUserService } from "../context/user/userService";
-import { AppLogger } from "../utilities/logger";
+import { AppLogger } from "../logger";
 import { IBaseController } from "./baseController";
 
 export class UserController extends IBaseController {
